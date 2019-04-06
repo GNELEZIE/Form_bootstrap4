@@ -2,14 +2,11 @@
 session_start();
 
  require 'database.php';
- include'php/function.php';
+include'php/function.php';
  $db = Database::connect();
-//Nos
+ 
 
-
-
-
-
+ 
 
 
 if(isset($_POST['forminscription'])){
@@ -21,21 +18,26 @@ if(isset($_POST['forminscription'])){
       $date = checkInput($_POST['date']);
       $com = checkInput($_POST['com']);
      $sexe = checkInput($_POST['radio']);
+//     $image = checkInput($_FILES["image"]["name"]);
+//    $imagePath          = 'images/'. basename($image);
+//        $imageExtension     = pathinfo($imagePath,PATHINFO_EXTENSION);
         $reqnom= $db->prepare('SELECT *FROM users WHERE nom=?');
            $reqnom->execute(array($nom));
            $pseudexist = $reqnom->rowCount();
-           if($pseudexist ==0){
-               
+           if($pseudexist ==0){ 
       
-$db_table="users";
-$db_value="nom,prenom,date,com,sexe";
-$db_inconnu='?,?,?,?,?';
-$data_value= array($nom,$prenom,$date,$com,$sexe);
+    $db_table="users";
+    $db_value="nom,prenom,date,sexe,com,image";
+    $db_inconnu="?,?,?,?,?,?";
+    $data_value= array($nom,$prenom,$date,$com,$sexe,$image);
+               
+               
+          echo insertData($db_table,$db_value,$db_inconnu,$data_value,$db);      
+               
+               
 
-  $res= insertData($db_table,$db_value,$data_value,$db_inconnu,$db);
-                
-                   $Error = '<div class="alert alert-success">Votre compte a été crée avec success veillez vous voir la liste des inscrit  ici <a href="membre_inscrits.php">mon profil !!!!</div>';
-                   
+//     $reqes= $db->prepare('INSERT INTO '.$db_table.'('.$db_value.') VALUES('.$db_inconnu.')');
+//     $result=$reqes->execute($data_value);
                    
                
                    
@@ -43,22 +45,15 @@ $data_value= array($nom,$prenom,$date,$com,$sexe);
                
           
            }else{
-                $Error = '<div class="alert alert-danger">Ce nom est déja inscrit!!!!!<a href="connexion.php">mon profil</div>';
-           }
-          
-         
+                
+         echo'<div class="alert alert-danger">Tous les champ doivent être remplir !!! <a href="connexion.php"> </a>mon profil</div>';
                
       
            
        
    } 
-    
-    else{ 
-        
-        $Error =  '<div class="alert alert-danger" style="color:red">Tous les champs doivent être obligatoirement remplir!!!!</div>';
-        }
-    
-    
+     
+   }
     
     
 }
@@ -98,34 +93,16 @@ $data_value= array($nom,$prenom,$date,$com,$sexe);
 </head>
     <body>
         
+
+        
+        
+        
     <script>
-        
-//    
-//	  $('#dynamic_container').append(html);
-//	  $('#remove_more').fadeIn(function(){
-//	  	 $(this).show();
-//	  });
-//     });
-//
-//     $('#remove_more').on('click', function(){
-//         
-//         $('#append_no_'+i).removeClass('bounceInLeft').addClass('bounceOutRight')
-//            .fadeOut(function(){
-//            	$(this).remove();
-//            });
-//            i--;
-//            if(i==0){
-//            	$('#remove_more').fadeOut(function(){
-//            		$(this).hide()
-//            	});;
-//            }
-//   
-//     });
-//	});
+
         
         
         
-        </script>
+    </script>
         
         
         
@@ -143,21 +120,20 @@ $data_value= array($nom,$prenom,$date,$com,$sexe);
 			</div>
 			<div class="card-body">
 				<form method="POST">
-                            
-        <?php
+                        
+                   <div class="alert alert-danger">Tous les champ doivent être remplir !!! <a href="connexion.php"> </a>mon profil</div>;
         
-       if(isset($Error)){
-            echo '<font color="red">'.$Error.'</font>';
-        }
-        
-        ?>
+                    <div class="alert alert-success">Votre compte a été crée avec success!!!!!<a href="connexion.php"> </a>mon profil</div>; 
+
+                    
+       
 					<div id="dynamic_container">
 						<div class="input-group">
                             
 							<div class="input-group-prepend">
 								<span class="input-group-text br-15"><i class="fas fa-user-graduate"></i></span>
 							</div>
-							<input type="text"  name="nom" id="nom" placeholder="nom" class="form-control"  value="<?php if(isset($nom)){echo $nom;} ?>"/>
+							<input type="text"  name="nom" id="nom" placeholder="nom" class="form-control"/>
 						</div>
                         
                         
@@ -199,7 +175,14 @@ $data_value= array($nom,$prenom,$date,$com,$sexe);
                          <option></option>
                         
                         
-                        </select>
+                        </select><br><br>
+                        
+                        <div class="input-group mt-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text br-15"><i class="fas fa-user-graduate"></i></span>
+							</div>
+                            <input type="file" name="image" id="image" placeholder="votre photo" class="form-control"/>
+						</div>
                         
                         
                     
@@ -218,7 +201,7 @@ $data_value= array($nom,$prenom,$date,$com,$sexe);
 				 
 				<input  type="submit" style="font-size: 20px;"  value="S'insrire"  name="forminscription" class="btn btn-success btn-sm float-right submit_btn"/>
                    
-			</div>
+			       </div>
                     
                     
                     

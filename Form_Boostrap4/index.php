@@ -1,9 +1,9 @@
 <?php 
 session_start();
 
- require 'database.php';
-include'php/function.php';
+ require 'php/database.php';
  $db = Database::connect();
+include'php/function.php';
  
 
  
@@ -17,14 +17,17 @@ if(isset($_POST['forminscription'])){
       $prenom = checkInput($_POST['prenom']);
       $date = checkInput($_POST['date']);
       $com = checkInput($_POST['com']);
-     $sexe = checkInput($_POST['radio']);
+	 $sexe = checkInput($_POST['radio']);
+	 $image = checkInput($_FILES['image']['name']);
+	 $imagePath          = 'images/'. basename($image);
+	 $imageExtension     = pathinfo($imagePath,PATHINFO_EXTENSION);
 //     $image = checkInput($_FILES["image"]["name"]);
-//    $imagePath          = 'images/'. basename($image);
+//    $imagePath = 'images/'. basename($image);
 //        $imageExtension     = pathinfo($imagePath,PATHINFO_EXTENSION);
-        $reqnom= $db->prepare('SELECT *FROM users WHERE nom=?');
-           $reqnom->execute(array($nom));
-           $pseudexist = $reqnom->rowCount();
-           if($pseudexist ==0){ 
+       // $reqnom= $db->prepare('SELECT *FROM users WHERE nom=?');
+        //$reqnom->execute(array($nom));
+         //  $pseudexist = $reqnom->rowCount();
+          // if($pseudexist ==0){ 
       
     $db_table="users";
     $db_value="nom,prenom,date,sexe,com,image";
@@ -32,7 +35,7 @@ if(isset($_POST['forminscription'])){
     $data_value= array($nom,$prenom,$date,$com,$sexe,$image);
                
                
-          echo insertData($db_table,$db_value,$db_inconnu,$data_value,$db);      
+         insertData($db_table,$db_value,$db_inconnu,$data_value,$db);      
                
                
 
@@ -44,11 +47,7 @@ if(isset($_POST['forminscription'])){
                
                
           
-           }else{
-                
-         echo'<div class="alert alert-danger">Tous les champ doivent être remplir !!! <a href="connexion.php"> </a>mon profil</div>';
-               
-      
+           
            
        
    } 
@@ -56,7 +55,7 @@ if(isset($_POST['forminscription'])){
    }
     
     
-}
+
 
 
  function checkInput($data) 
@@ -69,7 +68,11 @@ if(isset($_POST['forminscription'])){
 
 ?>
 
+<?php
 
+
+
+?>
 
 
 
@@ -112,14 +115,14 @@ if(isset($_POST['forminscription'])){
     <div align="center">
         
         
-        	<dvi class="container h-100">
+        	<div class="container h-100">
 	<div class="d-flex justify-content-center">
 		<div class="card mt-5 col-md-4 animated bounceInDown myForm">
 			<div class="card-header">
 				<h4>FORMULAIRE INSCRIPTION</h4>
 			</div>
 			<div class="card-body">
-				<form method="POST">
+				<form method="POST" enctype="multipart/form-data">
                         
                    <div class="alert alert-danger">Tous les champ doivent être remplir !!! <a href="connexion.php"> </a>mon profil</div>;
         
@@ -162,7 +165,11 @@ if(isset($_POST['forminscription'])){
 							</div>
 							<input type="radio" value="FEMME" name="radio" id="radio" class="form-control"/>
 						</div><br>
-                        
+						<div class="input-group mt-3">
+							 
+                            <input  type="file" id="image" name="image"/>
+						</div>
+                       
                         
                         
                        <select  class="form-control"   id="com" name="com">
@@ -177,12 +184,6 @@ if(isset($_POST['forminscription'])){
                         
                         </select><br><br>
                         
-                        <div class="input-group mt-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text br-15"><i class="fas fa-user-graduate"></i></span>
-							</div>
-                            <input type="file" name="image" id="image" placeholder="votre photo" class="form-control"/>
-						</div>
                         
                         
                     
@@ -210,7 +211,7 @@ if(isset($_POST['forminscription'])){
 			
 		</div>
 	</div>
-	</dvi>
+	</div>
         
 
         
